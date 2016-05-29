@@ -3,7 +3,7 @@
     name: nginx
     state: restarted
 
-- name: restart {{appname}}
+- name: "restart {{appname}}"
   service:
-    name: {{appname}}
+    name: "{{appname}}"
     state: restarted
