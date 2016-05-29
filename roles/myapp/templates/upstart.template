@@ -2,4 +2,4 @@
 
 start on runlevel [2345]
 stop on runlevel [06]
-exec uwsgi --emperor /var/app/{{appname}}
+exec uwsgi --ini /var/app/{{appname}}/{{appname}}.ini
