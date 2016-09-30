@@ -41,6 +41,14 @@
     owner: www-data
     group: www-data
 
+- name: Copy over the flask template
+  copy:
+    src: templates
+    dest: "/var/app/{{appname}}/"
+    mode: 0664
+    owner: www-data
+    group: www-data
+  notify: "restart {{appname}}"
 
 - name: copy over nginx template
   template:
@@ -50,6 +58,15 @@
     owner: www-data
     group: www-data
   notify: restart nginx
+
+- name: copy over the template for config.ini
+  template:
+    src: config.ini.template
+    dest: "/var/app/{{appname}}/config.ini"
+    mode: 0664
+    owner: www-data
+    group: www-data
+  notify: "restart {{appname}}"
 
 
 - name: copy over the uwsgi template
