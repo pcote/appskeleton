@@ -49,6 +49,8 @@ def create_user():
         msg = "User already exists"
     elif new_password == confirmed_password:
         msg = model.create_user(new_username, new_password)
+        if model.get_user(new_username):
+            model.initialize_dom_numbers(new_username)
     else:
         msg = "Passwords do not match"
     return msg
