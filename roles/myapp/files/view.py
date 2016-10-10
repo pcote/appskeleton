@@ -50,7 +50,7 @@ def create_user():
     elif new_password == confirmed_password:
         msg = model.create_user(new_username, new_password)
         if model.get_user(new_username):
-            model.initialize_dom_numbers(new_username)
+            pass 
     else:
         msg = "Passwords do not match"
     return msg
