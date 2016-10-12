@@ -4,7 +4,8 @@ import argparse
 import os
 import subprocess
 import re
-from pdb import set_trace
+import json
+
 
 if __name__ == '__main__':
     project_collection_folder = "PycharmProjects"
@@ -31,13 +32,23 @@ if __name__ == '__main__':
         res = subprocess.call(move_command)
 
     create_project()
+
+    # set up the playbook with the right role name.
     playbook_path = os.path.join(dest, "playbook.yml")
     with open(playbook_path, "r+") as f:
         raw_data = f.read()
         replacement_data = re.sub(r"myapp", project_name, raw_data)
-        print("\nreplacement data......")
-        print(replacement_data)
         f.seek(0)
         f.write(replacement_data)
 
-    print("done...")
+
+    # give the json deployment file sensible defaults
+    json_file_path = os.path.join(dest, "deployvarsdev.json")
+
+    with open(json_file_path, "rt") as f:
+        deploy_data = json.load(f)
+
+    deploy_data["domain"] = "{}.com".format(project_name)
+    deploy_data["appname"] = project_name
+    with open(json_file_path, "wt") as f:
+        json.dump(deploy_data, f, indent=4)
