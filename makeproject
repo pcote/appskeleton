@@ -1,0 +1,27 @@
+#!/usr/bin/python3
+import shutil
+import argparse
+import os
+
+if __name__ == '__main__':
+    project_collection_folder = "PycharmProjects"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("project_name")
+    args = parser.parse_args()
+    project_name = args.project_name
+    home_folder = os.environ.get("HOME")
+    dest = os.path.join(home_folder, project_collection_folder, project_name)
+
+    def create_project():
+        if not os.path.exists(dest):
+            os.mkdir(dest)
+
+        # set up the list of files we want to move to the target folder
+        file_list = "deployvarsdev.json playbook.yml provisiondev.sh README.md".split()
+        for f in file_list:
+            shutil.copy(f, dest)
+
+        shutil.copytree("roles", os.path.join(dest, "roles"))
+
+    create_project()
+
