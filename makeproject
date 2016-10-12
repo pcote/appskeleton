@@ -2,6 +2,9 @@
 import shutil
 import argparse
 import os
+import subprocess
+import re
+from pdb import set_trace
 
 if __name__ == '__main__':
     project_collection_folder = "PycharmProjects"
@@ -22,6 +25,19 @@ if __name__ == '__main__':
             shutil.copy(f, dest)
 
         shutil.copytree("roles", os.path.join(dest, "roles"))
+        move_command = ["mv"]
+        move_command.append(os.path.join(dest, "roles", "myapp"))
+        move_command.append(os.path.join(dest, "roles", project_name))
+        res = subprocess.call(move_command)
 
     create_project()
+    playbook_path = os.path.join(dest, "playbook.yml")
+    with open(playbook_path, "r+") as f:
+        raw_data = f.read()
+        replacement_data = re.sub(r"myapp", project_name, raw_data)
+        print("\nreplacement data......")
+        print(replacement_data)
+        f.seek(0)
+        f.write(replacement_data)
 
+    print("done...")
