@@ -10,6 +10,18 @@
     - "/var/log/{{appname}}"
     - "/var/www/{{appname}}"
 
+- name: Setup nginx log files
+  copy:
+    src: "{{item}}"
+    dest: "/var/log/{{appname}}/{{item}}"
+    owner: www-data
+    group: www-data
+    mode: 0770
+  with_items:
+    - access.log
+    - error.log
+    - wsgi.log
+
 
 - name: Setup the MySQL database for the application
   mysql_db:
