@@ -3,7 +3,7 @@
     dest: "{{item}}"
     owner: www-data
     group: www-data
-    mode: 0770
+    mode: 0775
     state: directory
   with_items:
     - "/var/app/{{appname}}"
@@ -67,7 +67,7 @@
   template:
     src: config.ini.template
     dest: "/var/app/{{appname}}/config.ini"
-    mode: 0664
+    mode: 0660
     owner: www-data
     group: www-data
   notify: "restart {{appname}}"
