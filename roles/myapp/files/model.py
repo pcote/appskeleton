@@ -29,18 +29,15 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     username = Column(VARCHAR(50), primary_key=True, nullable=False)
-    password = Column(Text, nullable=False)
     is_active = Column(Boolean, default=False)
     is_authenticated = Column(Boolean, default=False)
     is_anonymous = Column(Boolean, default=False)
+    password = Column(Text, nullable=False)
+    salt = Column(BLOB)
 
     def get_id(self):
         return self.username
 
-class Salt(Base):
-    __tablename__ = "salts"
-    username = Column(ForeignKey("users.username"), primary_key=True)
-    salt = Column(BLOB)
 
 Session = sessionmaker(bind=eng)
 Base.metadata.create_all(eng)
@@ -67,15 +64,13 @@ def create_user(uname, pw):
         return msg
 
     sess = Session()
-    hasher = hashlib.sha256()
     salt_data = os.urandom(16)
+    hasher = hashlib.sha256()
     hasher.update(salt_data + pw.encode())
     digest = hasher.hexdigest()
-    user = User(username=uname, password=digest)
-    salt = Salt(username=uname, salt=salt_data)
+    user = User(username=uname, password=digest, salt=salt_data)
+
     sess.add(user)
-    sess.commit() # commit to ensure the forgeign key relationship takes with the salt object
-    sess.add(salt)
     sess.commit()
     sess.close()
     return "created user: {}".format(uname)
@@ -88,17 +83,11 @@ def get_user(uname):
     return user
 
 
-def get_salt(uname):
-    sess = Session()
-    salt = sess.query(Salt).filter_by(username=uname).one_or_none()
-    sess.close()
-    return salt.salt
-
 def is_password_valid(uname, pw, prehashed=False):
     if prehashed:
         password_arg = pw
     else:
-        salt_data = get_salt(uname)
+        salt_data = get_user(uname).salt
         hasher = hashlib.sha256()
         hasher.update(salt_data + pw.encode())
         password_arg = hasher.hexdigest()
