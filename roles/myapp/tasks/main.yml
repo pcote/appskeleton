@@ -32,6 +32,20 @@
     collation: utf8_general_ci
 
 
+- name: Bring over the requirements file
+  copy:
+    src: "requirements.txt"
+    dest: "/var/app/{{appname}}/requirements.txt"
+    owner: www-data
+    group: www-data
+    mode: 0664
+
+- name: install pip packages
+  pip:
+    virtualenv: "/var/app/{{appname}}/venv/"
+    executable: pip3.4
+    requirements: "/var/app/{{appname}}/requirements.txt"
+
 - name: Copy over core application files.
   copy:
     src: "{{item}}"

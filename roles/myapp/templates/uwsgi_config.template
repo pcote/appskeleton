@@ -5,3 +5,4 @@ env=PYTHONPATH=/var/app/{{appname}}/
 env=PATH=/var/app/{{appname}}/
 module=view:app
 logto=/var/log/{{appname}}/wsgi.log
+virtualenv=/var/app/{{appname}}/venv/

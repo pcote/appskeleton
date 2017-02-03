@@ -1,0 +1,8 @@
+# appskeleton requirements file
+flask
+PyMySQL
+sqlalchemy
+google-api-python-client
+oauth2client
+pymongo
+flask-login
